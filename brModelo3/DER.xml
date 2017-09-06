@@ -153,7 +153,7 @@
    </Entidade>
    <Entidade ID="37">
       <Bounds Height="46" Left="630" Top="227" Width="101" />
-      <Texto>Administracao</Texto>
+      <Texto>Administração</Texto>
       <Observacao />
       <Dicionario />
       <Fonte Estilo="1" Nome="Arial" Tamanho="12" />
@@ -170,7 +170,7 @@
    </Relacionamento>
    <Especializacao ID="53">
       <Bounds Height="32" Left="937" Top="293" Width="40" />
-      <Texto>Especializacao_1</Texto>
+      <Texto>Especialização_1</Texto>
       <Observacao />
       <Dicionario />
       <Fonte Estilo="1" Nome="Arial" Tamanho="12" />
@@ -406,7 +406,7 @@
    </Relacionamento>
    <Entidade ID="99">
       <Bounds Height="46" Left="487" Top="135" Width="101" />
-      <Texto>Empresa Manutencao</Texto>
+      <Texto>Empresa Manutenção</Texto>
       <Observacao />
       <Dicionario />
       <Fonte Estilo="1" Nome="Arial" Tamanho="12" />
@@ -502,7 +502,7 @@
    </Entidade>
    <Relacionamento ID="120">
       <Bounds Height="46" Left="184" Top="335" Width="112" />
-      <Texto>composto por</Texto>
+      <Texto>é composto por</Texto>
       <Observacao />
       <Dicionario />
       <Fonte Estilo="1" Nome="Arial" Tamanho="12" />
@@ -510,7 +510,7 @@
    </Relacionamento>
    <Relacionamento ID="121">
       <Bounds Height="46" Left="5" Top="338" Width="112" />
-      <Texto>composto por</Texto>
+      <Texto>é composto por</Texto>
       <Observacao />
       <Dicionario />
       <Fonte Estilo="1" Nome="Arial" Tamanho="12" />
@@ -680,7 +680,7 @@
    </Ligacao>
    <Entidade ID="171">
       <Bounds Height="46" Left="7" Top="574" Width="101" />
-      <Texto>Tete</Texto>
+      <Texto>Tíquete</Texto>
       <Observacao />
       <Dicionario />
       <Fonte Estilo="1" Nome="Arial" Tamanho="12" />
@@ -918,7 +918,7 @@
    </Ligacao>
    <Entidade ID="235">
       <Bounds Height="46" Left="487" Top="49" Width="101" />
-      <Texto>Espaco</Texto>
+      <Texto>Espaços</Texto>
       <Observacao />
       <Dicionario />
       <Fonte Estilo="1" Nome="Arial" Tamanho="12" />
