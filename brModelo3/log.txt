@@ -1,0 +1,19 @@
+.LOG
+10:10 23/10/2017
+-- André
+Alterando cardinalidade entre [CLIENTE]<CRIA>[CONTA]
+Alterando cardinalidade entre [CLIENTE]<FAZ>[INSCRIÇÃO]
+Alterando cardinalidade entre [ADMINISTRAÇÃO]<REGISTRA>[EVENTO]
+Alterando nome [ADMINISTRAÇÃO] para [ADMINISTRADOR]
+Alterando cardinalidade [ADMINISTRADOR]<REPOE PRODUTO>[FRALDÁRIO]
+Alterando cardinalidade [ADMINISTRADOR]<Contrata>[EMPRESA MANUTENÇÃO]
+Removendo atributo [Achados e Perdidos](Localizacao)
+Criando relacionamento [ACHADOS E PERDIDOS]<FICA EM>[ESPAÇO]
+Alterando cardinalidade [OBJETO]<POSSUI(2)>[CLASSIFICACAO]
+Alterando cardinalidade [CONTRATO]<TEM(3)>[MENSALIDADE]
+Alterando cardinalidade [TIQUETE]<RECEBE>[CLIENTE]
+10:50 23/10/2017
+Adicionando atributo [WI-FI](id_wifi)
+Removendo atributo (Estado) [Vaga de Cliente], [Vaga de Lojista]
+Adicionando entidade [SITUAÇÃO VAGA]
+Criando relacionamento [Vaga de lojista],[Vaga de cliente] <Esta em, esta em_2>[Situacao vaga]
