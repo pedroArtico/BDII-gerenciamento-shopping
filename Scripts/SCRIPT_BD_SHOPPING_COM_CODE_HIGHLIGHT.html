@@ -1,0 +1,1703 @@
+<pre style="background:#fff;color:#000"><span style="color:#00b418">/***********************************************************************
+Título: script de banco de dados para o gerenciamento de um shopping
+Linguagem: T-SQL
+
+Este script faz parte do trabalho desenvolvido para a disciplina de Banco de Dados II
+na Faculdade de Tecnologia da Unicamp
+
+Data: 22/11/2017
+
+Dica: o script está dividido em áreas, para mudar rapidamente entre essas áreas pesquise por *MARK*
+***********************************************************************/</span>
+
+
+USE [master]
+GO
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+## ARQUIVOS 
+=============================================================================================================*/</span>
+<span style="color:#00b418">/****** Object:  Database [bd_shopping]    Script Date: 22/11/2017 11:57:09 ******/</span>
+CREATE DATABASE [bd_shopping]
+ CONTAINMENT <span style="color:#0100b6;font-weight:700">=</span> NONE
+ <span style="color:#0100b6;font-weight:700">ON</span>  PRIMARY 
+( NAME <span style="color:#0100b6;font-weight:700">=</span> N<span style="color:#d80800">'bd_shopping'</span>, FILENAME <span style="color:#0100b6;font-weight:700">=</span> N<span style="color:#d80800">'c:<span style="color:#26b31a">\P</span>rogram Files (x86)<span style="color:#26b31a">\M</span>icrosoft SQL Server<span style="color:#26b31a">\M</span>SSQL11.MSSQLSERVER<span style="color:#26b31a">\M</span>SSQL<span style="color:#26b31a">\D</span>ATA<span style="color:#26b31a">\b</span>d_shopping.mdf'</span> , SIZE <span style="color:#0100b6;font-weight:700">=</span> 20480KB , MAXSIZE <span style="color:#0100b6;font-weight:700">=</span> UNLIMITED, FILEGROWTH <span style="color:#0100b6;font-weight:700">=</span> 5120KB )
+ LOG <span style="color:#0100b6;font-weight:700">ON</span> 
+( NAME <span style="color:#0100b6;font-weight:700">=</span> N<span style="color:#d80800">'bd_shopping_log'</span>, FILENAME <span style="color:#0100b6;font-weight:700">=</span> N<span style="color:#d80800">'c:<span style="color:#26b31a">\P</span>rogram Files (x86)<span style="color:#26b31a">\M</span>icrosoft SQL Server<span style="color:#26b31a">\M</span>SSQL11.MSSQLSERVER<span style="color:#26b31a">\M</span>SSQL<span style="color:#26b31a">\D</span>ATA<span style="color:#26b31a">\b</span>d_shopping_log.ldf'</span> , SIZE <span style="color:#0100b6;font-weight:700">=</span> 2048KB , MAXSIZE <span style="color:#0100b6;font-weight:700">=</span> 2048GB , FILEGROWTH <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">10</span>%)
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> COMPATIBILITY_LEVEL <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">110</span>
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULL_DEFAULT OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> ANSI_WARNINGS OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> ARITHABORT OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> AUTO_CLOSE <span style="color:#0100b6;font-weight:700">ON</span> 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> AUTO_SHRINK OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> AUTO_UPDATE_STATISTICS <span style="color:#0100b6;font-weight:700">ON</span> 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> CURSOR_DEFAULT  GLOBAL 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> CONCAT_NULL_YIELDS_NULL OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> NUMERIC_ROUNDABORT OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> RECURSIVE_TRIGGERS OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span>  ENABLE_BROKER 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> TRUSTWORTHY OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> PARAMETERIZATION SIMPLE 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> READ_COMMITTED_SNAPSHOT OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> HONOR_BROKER_PRIORITY OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> RECOVERY SIMPLE 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span>  MULTI_USER 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> PAGE_VERIFY CHECKSUM  
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> DB_CHAINING OFF 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> FILESTREAM( NON_TRANSACTED_ACCESS <span style="color:#0100b6;font-weight:700">=</span> OFF ) 
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span> TARGET_RECOVERY_TIME <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span> SECONDS 
+GO
+USE [bd_shopping]
+GO
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+## SCHEMAS
+=============================================================================================================*/</span>
+<span style="color:#00b418">/****** Object:  Schema [schem_estacionamento]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE SCHEMA [schem_estacionamento]
+GO
+<span style="color:#00b418">/****** Object:  Schema [schem_locacao]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE SCHEMA [schem_locacao]
+GO
+<span style="color:#00b418">/****** Object:  Schema [schem_prog_usp_usf]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE SCHEMA [schem_prog_usp_usf]
+GO
+<span style="color:#00b418">/****** Object:  Schema [schem_standard]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE SCHEMA [schem_standard]
+GO
+<span style="color:#00b418">/****** Object:  Schema [schem_views]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE SCHEMA [schem_views]
+GO
+
+
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+## FUNCTIONS
+=============================================================================================================*/</span>
+<span style="color:#00b418">/****** Object:  UserDefinedFunction [schem_prog_usp_usf].[usf_valida_cnpj]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE FUNCTION [schem_prog_usp_usf].[usf_valida_cnpj](
+    @CNPJ CHAR(<span style="color:#cd0000;font-style:italic">14</span>)
+)RETURNS BIT
+<span style="color:#0100b6;font-weight:700">AS</span>
+<span style="color:#00b418">-- Essa função foi baseada na versão disponível em [https://www.dirceuresende.com/blog/validando-cpf-cnpj-e-mail-telefone-e-cep-no-sql-server/] (18/11/2017)</span>
+<span style="color:#0100b6;font-weight:700">BEGIN</span>
+  DECLARE @INDICE INT <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">1</span> 
+  DECLARE @SOMA INT <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span> 
+  DECLARE @DIG1 INT 
+  DECLARE @DIG2 INT 
+  DECLARE @VAR1 INT 
+  DECLARE @VAR2 INT
+  DECLARE @RESULTADO BIT <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span>
+    
+    <span style="color:#00b418">/* CÁLCULO DO 1º DÍGITO */</span>
+    <span style="color:#00b418">/* CÁLCULO DA 1ª PARTE DO ALGORÍTIOM 5432 */</span>
+    <span style="color:#0100b6;font-weight:700">SET</span> @VAR1 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">5</span> <span style="color:#00b418">/* 1a Parte do Algorítimo começando de "5" */</span>
+    WHILE (@INDICE <span style="color:#0100b6;font-weight:700">&lt;=</span> <span style="color:#cd0000;font-style:italic">4</span>)
+    <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @Soma <span style="color:#0100b6;font-weight:700">=</span> @Soma <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#3c4c72;font-weight:700">CONVERT</span>(INT,<span style="color:#3c4c72;font-weight:700">SUBSTRING</span>(@CNPJ,@INDICE,<span style="color:#cd0000;font-style:italic">1</span>)) <span style="color:#0100b6;font-weight:700">*</span> @VAR1
+      <span style="color:#0100b6;font-weight:700">SET</span> @INDICE <span style="color:#0100b6;font-weight:700">=</span> @INDICE <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#cd0000;font-style:italic">1</span> <span style="color:#00b418">/* Navegando um-a-um até &lt; = 4, as quatro primeira posições */</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @VAR1 <span style="color:#0100b6;font-weight:700">=</span> @VAR1 <span style="color:#0100b6;font-weight:700">-</span> <span style="color:#cd0000;font-style:italic">1</span>       <span style="color:#00b418">/* subtraindo o algorítimo de 5 até 2 */</span>
+    END
+    <span style="color:#00b418">/* CÁLCULO DA 2ª PARTE DO ALGORÍTIOM 98765432 */</span>
+    <span style="color:#0100b6;font-weight:700">SET</span> @VAR2 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">9</span>
+    WHILE (@INDICE <span style="color:#0100b6;font-weight:700">&lt;=</span> <span style="color:#cd0000;font-style:italic">12</span>)
+    <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @Soma <span style="color:#0100b6;font-weight:700">=</span> @Soma <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#3c4c72;font-weight:700">CONVERT</span>(INT,<span style="color:#3c4c72;font-weight:700">SUBSTRING</span>(@CNPJ,@INDICE,<span style="color:#cd0000;font-style:italic">1</span>)) <span style="color:#0100b6;font-weight:700">*</span> @VAR2
+      <span style="color:#0100b6;font-weight:700">SET</span> @INDICE <span style="color:#0100b6;font-weight:700">=</span> @INDICE <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#cd0000;font-style:italic">1</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @VAR2 <span style="color:#0100b6;font-weight:700">=</span> @VAR2 <span style="color:#0100b6;font-weight:700">-</span> <span style="color:#cd0000;font-style:italic">1</span>            
+    END
+       <span style="color:#0100b6;font-weight:700">SET</span> @DIG1 <span style="color:#0100b6;font-weight:700">=</span> (@soma % <span style="color:#cd0000;font-style:italic">11</span>)
+       <span style="color:#00b418">/* SE O RESTO DA DIVISÃO FOR &lt; 2, O DIGITO = 0 */</span>
+       IF @DIG1 <span style="color:#0100b6;font-weight:700">&lt;</span> <span style="color:#cd0000;font-style:italic">2</span>
+            <span style="color:#0100b6;font-weight:700">SET</span> @DIG1 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span>;
+       ELSE <span style="color:#00b418">/* SE O RESTO DA DIVISÃO NÃO FOR &lt; 2*/</span>
+            <span style="color:#0100b6;font-weight:700">SET</span> @DIG1 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">11</span> <span style="color:#0100b6;font-weight:700">-</span> (@soma % <span style="color:#cd0000;font-style:italic">11</span>);
+    <span style="color:#00b418">/* CÁLCULO DO 2º DÍGITO */</span>
+    <span style="color:#00b418">/* ZERANDO O INDICE E A SOMA PARA COMEÇAR A CALCULAR O 2º DÍGITO*/</span>   
+    <span style="color:#0100b6;font-weight:700">SET</span> @INDICE <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">1</span>
+    <span style="color:#0100b6;font-weight:700">SET</span> @SOMA <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span>
+    <span style="color:#00b418">/* CÁLCULO DA 1ª PARTE DO ALGORÍTIOM 65432 */</span>
+    <span style="color:#0100b6;font-weight:700">SET</span> @VAR1 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">6</span> <span style="color:#00b418">/* 2a Parte do Algorítimo começando de "6" */</span>
+    <span style="color:#0100b6;font-weight:700">SET</span> @RESULTADO <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span>
+    WHILE (@INDICE <span style="color:#0100b6;font-weight:700">&lt;=</span> <span style="color:#cd0000;font-style:italic">5</span>)
+    <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @Soma <span style="color:#0100b6;font-weight:700">=</span> @Soma <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#3c4c72;font-weight:700">CONVERT</span>(INT,<span style="color:#3c4c72;font-weight:700">SUBSTRING</span>(@CNPJ,@INDICE,<span style="color:#cd0000;font-style:italic">1</span>)) <span style="color:#0100b6;font-weight:700">*</span> @VAR1
+      <span style="color:#0100b6;font-weight:700">SET</span> @INDICE <span style="color:#0100b6;font-weight:700">=</span> @INDICE <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#cd0000;font-style:italic">1</span> <span style="color:#00b418">/* Navegando um-a-um até &lt; = 5, as quatro primeira posições */</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @VAR1 <span style="color:#0100b6;font-weight:700">=</span> @VAR1 <span style="color:#0100b6;font-weight:700">-</span> <span style="color:#cd0000;font-style:italic">1</span>       <span style="color:#00b418">/* subtraindo o algorítimo de 6 até 2 */</span>
+    END
+    <span style="color:#00b418">/* CÁLCULO DA 2ª PARTE DO ALGORÍTIOM 98765432 */</span>
+    <span style="color:#0100b6;font-weight:700">SET</span> @VAR2 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">9</span>
+    WHILE (@INDICE <span style="color:#0100b6;font-weight:700">&lt;=</span> <span style="color:#cd0000;font-style:italic">13</span>)
+    <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @Soma <span style="color:#0100b6;font-weight:700">=</span> @Soma <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#3c4c72;font-weight:700">CONVERT</span>(INT,<span style="color:#3c4c72;font-weight:700">SUBSTRING</span>(@CNPJ,@INDICE,<span style="color:#cd0000;font-style:italic">1</span>)) <span style="color:#0100b6;font-weight:700">*</span> @VAR2
+      <span style="color:#0100b6;font-weight:700">SET</span> @INDICE <span style="color:#0100b6;font-weight:700">=</span> @INDICE <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#cd0000;font-style:italic">1</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @VAR2 <span style="color:#0100b6;font-weight:700">=</span> @VAR2 <span style="color:#0100b6;font-weight:700">-</span> <span style="color:#cd0000;font-style:italic">1</span>            
+    END
+       <span style="color:#0100b6;font-weight:700">SET</span> @DIG2 <span style="color:#0100b6;font-weight:700">=</span> (@soma % <span style="color:#cd0000;font-style:italic">11</span>)
+       <span style="color:#00b418">/* SE O RESTO DA DIVISÃO FOR &lt; 2, O DIGITO = 0 */</span>
+       IF @DIG2 <span style="color:#0100b6;font-weight:700">&lt;</span> <span style="color:#cd0000;font-style:italic">2</span>
+           <span style="color:#0100b6;font-weight:700">SET</span> @DIG2 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span>;
+       ELSE <span style="color:#00b418">/* SE O RESTO DA DIVISÃO NÃO FOR &lt; 2*/</span>
+           <span style="color:#0100b6;font-weight:700">SET</span> @DIG2 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">11</span> <span style="color:#0100b6;font-weight:700">-</span> (@soma % <span style="color:#cd0000;font-style:italic">11</span>);
+<span style="color:#00b418">-- Validando</span>
+    IF (@DIG1 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#3c4c72;font-weight:700">SUBSTRING</span>(@CNPJ,LEN(@CNPJ)<span style="color:#0100b6;font-weight:700">-</span><span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>)) <span style="color:#0100b6;font-weight:700">AND</span> (@DIG2 <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#3c4c72;font-weight:700">SUBSTRING</span>(@CNPJ,LEN(@CNPJ),<span style="color:#cd0000;font-style:italic">1</span>)) <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @RESULTADO <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">1</span>
+    END
+    ELSE <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">SET</span> @RESULTADO <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span>
+    END
+    RETURN @RESULTADO
+  END
+
+
+GO
+<span style="color:#00b418">/****** Object:  UserDefinedFunction [schem_prog_usp_usf].[usf_valida_email]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+
+CREATE FUNCTION [schem_prog_usp_usf].[usf_valida_email] (@Ds_Email CHAR(<span style="color:#cd0000;font-style:italic">100</span>))
+<span style="color:#00b418">-- Essa função foi baseada na versão disponível em [https://www.dirceuresende.com/blog/validando-cpf-cnpj-e-mail-telefone-e-cep-no-sql-server/] (18/11/2017)</span>
+RETURNS BIT
+<span style="color:#0100b6;font-weight:700">AS</span>
+<span style="color:#0100b6;font-weight:700">BEGIN</span>
+  DECLARE @Retorno BIT <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span>
+  <span style="color:#0100b6;font-weight:700">SELECT</span>
+    @Retorno <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">1</span>
+  <span style="color:#0100b6;font-weight:700">WHERE</span> @Ds_Email NOT <span style="color:#0100b6;font-weight:700">LIKE</span> <span style="color:#d80800">'%[^a-z,0-9,@,.-_]%'</span>
+  <span style="color:#0100b6;font-weight:700">AND</span> @Ds_Email <span style="color:#0100b6;font-weight:700">LIKE</span> <span style="color:#d80800">'%_@_%_.__%'</span>
+  RETURN @Retorno
+END
+
+
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_estacionamento].[tbl_estacionamento]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+## TABELAS
+=============================================================================================================*/</span>
+CREATE TABLE [schem_estacionamento].[tbl_estacionamento](
+    [PK_idEstacionamento] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [total_vagas] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [qtdeVagasCliente] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [fluxo_diario] [int] <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [qtdVagasLojista] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [preco_por_hora_para_cliente] [money] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idEstacionamento] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_estacionamento].[tbl_situacao_vaga]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_estacionamento].[tbl_situacao_vaga](
+    [PK_idEstadoVaga] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [texto_situacao] [char](<span style="color:#cd0000;font-style:italic">16</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idEstadoVaga] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_estacionamento].[tbl_tiquete]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_estacionamento].[tbl_tiquete](
+    [PK_idTiquete] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [valor] [money] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [hora_saida] [datetime] <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [hora_entrada] [datetime] <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [FK_cliente_PK_idCliente] [int] <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [FK_vaga_cliente_PK_idVagaCliente] [int] <span style="color:#0100b6;font-weight:700">NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idTiquete] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_estacionamento].[tbl_vaga_cliente]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_estacionamento].[tbl_vaga_cliente](
+    [PK_idVagaCliente] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_estacionamento_PK_idEstacionamento] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_estacionamento_PK_idEstadoVaga] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idVagaCliente] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_estacionamento].[tbl_vaga_lojista]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_estacionamento].[tbl_vaga_lojista](
+    [PK_idVagaLojista] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_estacionamento_PK_idEstacionamento] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_estacionamento_PK_idEstadoVaga] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idVagaLojista] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_locacao].[tbl_contrato]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_locacao].[tbl_contrato](
+    [PK_idContrato] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [prazo_expiracao] [date] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [staus_contrato] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [prazo_inicio] [date] <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [tipo_contrato] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [valor] [money] <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [FK_espaco_PK_idEspaco] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_administrador_PK_idAdm] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_interessado_idInteressado] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idContrato] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_locacao].[tbl_fornece_para]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_locacao].[tbl_fornece_para](
+    [PK_fornecePara] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_fornecedor_PK_idFornecedor] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_loja_PK_idLoja] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [tipo_material] [char](<span style="color:#cd0000;font-style:italic">25</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_fornecePara] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_locacao].[tbl_fornecedor]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_locacao].[tbl_fornecedor](
+    [PK_idFornecedor] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [nome] [char](<span style="color:#cd0000;font-style:italic">50</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [permissao] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idFornecedor] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_locacao].[tbl_interessado]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_locacao].[tbl_interessado](
+    [idInteressado] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [nome] [char](<span style="color:#cd0000;font-style:italic">30</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [idInteressado] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_locacao].[tbl_loja]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_locacao].[tbl_loja](
+    [PK_idLoja] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [ramo_atuacao] [char](<span style="color:#cd0000;font-style:italic">100</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [nome] [char](<span style="color:#cd0000;font-style:italic">30</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_lojista_PK_idLojista] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idLoja] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_locacao].[tbl_lojista]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_locacao].[tbl_lojista](
+    [PK_idLojista] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [situacao] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [cnpj] [char](<span style="color:#cd0000;font-style:italic">18</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_vaga_lojista_PK_idVagaLojista] [int] <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [FK_interessado_idInteressado] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idLojista] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_locacao].[tbl_mensalidade]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_locacao].[tbl_mensalidade](
+    [PK_idMensalidade] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [forma_pagamento] [char](<span style="color:#cd0000;font-style:italic">100</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [data_dia] [datetime] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [status_do_pagamento] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [FK_contrato_interessado_PK_idContrato] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idMensalidade] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_locacao].[tbl_procura]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_locacao].[tbl_procura](
+    [PK_procura] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_administrador_PK_idAdm] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_interessado_idInteressado] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_procura] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_acessa]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_acessa](
+    [PK_idAcessa] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_conta_PK_login] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_wifi_PK_idWifi] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idAcessa] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_achados_e_perdidos]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_achados_e_perdidos](
+    [PK_idAchadosPerdidos] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_administrador_PK_idAdm] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_espaco_PK_idEspaco] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idAchadosPerdidos] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_administrador]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_administrador](
+    [PK_idAdm] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [senha] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [nome] [char](<span style="color:#cd0000;font-style:italic">50</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idAdm] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_classificacao]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_classificacao](
+    [PK_idClasse] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [tipo] [char](<span style="color:#cd0000;font-style:italic">64</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idClasse] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_cliente]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_cliente](
+    [PK_idCliente] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [telefone_numero] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [telefone_ddd] [char](<span style="color:#cd0000;font-style:italic">4</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [nome] [char](<span style="color:#cd0000;font-style:italic">50</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [email] [char](<span style="color:#cd0000;font-style:italic">100</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idCliente] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_conta]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_conta](
+    [PK_login] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [senha] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_cliente_PK_idCliente] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_login] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_empresa_manutencao]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_empresa_manutencao](
+    
+    [PK_cnpj] [char](<span style="color:#cd0000;font-style:italic">18</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [ramo_atuacao] [char](<span style="color:#cd0000;font-style:italic">30</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [nome] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_cnpj] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_espaco]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_espaco](
+    [PK_idEspaco] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [tamanho] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [nome_espaco] [char](<span style="color:#cd0000;font-style:italic">50</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_PK_localizacao_PK_localizacao] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_tipo_PK_idTipo] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_loja_PK_idLoja] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idEspaco] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_evento]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_evento](
+    [PK_idEvento] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [data_dia] [datetime] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [descricao] [char](<span style="color:#cd0000;font-style:italic">350</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [tipo] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [nome] [char](<span style="color:#cd0000;font-style:italic">40</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_administrador_PK_idAdm] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idEvento] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_fica_em_3]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_fica_em_3](
+    [PK_ficaEm3] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_espaco_PK_idEspaco] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_evento_PK_idEvento] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_ficaEm3] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_fraldario]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_fraldario](
+    [PK_idFraldario] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [situacao_produtos] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [FK_administrador_PK_idAdm] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [quantidade] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [tipo_produto] [char](<span style="color:#cd0000;font-style:italic">50</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [valor] [money] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idFraldario] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_inscricao]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_inscricao](
+    [PK_idInscricao] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_cliente_PK_idCliente] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_evento_PK_idEvento] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idInscricao] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_localizacao]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_localizacao](
+    [PK_localizacao] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [numero_do_corredor] [tinyint] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [andar] [tinyint] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_localizacao] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_objeto]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_objeto](
+    [PK_idObjeto] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [nome] [char](<span style="color:#cd0000;font-style:italic">25</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [descricao] [char](<span style="color:#cd0000;font-style:italic">350</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [FK_achados_e_perdidos_PK_idAchadosPerdidos] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [data_dia] [datetime] <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [local_achado] [char](<span style="color:#cd0000;font-style:italic">200</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [FK_classificacao_PK_idClasse] [int] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idObjeto] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_servico_empresa_manutencao]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_servico_empresa_manutencao](
+    [PK_id_sevico] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [nome_servico] [char](<span style="color:#cd0000;font-style:italic">200</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [data_servico] [datetime] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [valor_servico] [money] <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_empresa_manutencao_cnpj] [char](<span style="color:#cd0000;font-style:italic">18</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [FK_administrador_PK_idAdm] INT <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+ CONSTRAINT [PK_tbl_servico_empresa_manutencao] PRIMARY KEY CLUSTERED 
+(
+    [PK_id_sevico] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_tipo]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_tipo](
+    [PK_idTipo] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [forma_utilizacao] [char](<span style="color:#cd0000;font-style:italic">50</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idTipo] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/****** Object:  Table [schem_standard].[tbl_wifi]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TABLE [schem_standard].[tbl_wifi](
+    [PK_idWifi] [int] IDENTITY(<span style="color:#cd0000;font-style:italic">1</span>,<span style="color:#cd0000;font-style:italic">1</span>) <span style="color:#0100b6;font-weight:700">NOT NULL</span>,
+    [login_do_administrador] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+    [senha_do_administrador] [char](<span style="color:#cd0000;font-style:italic">20</span>) <span style="color:#0100b6;font-weight:700">NULL</span>,
+PRIMARY KEY CLUSTERED 
+(
+    [PK_idWifi] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, IGNORE_DUP_KEY <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING OFF
+GO
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+## VIEWS
+=============================================================================================================*/</span>
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_contr_vencidos]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_contr_vencidos] 
+<span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#0100b6;font-weight:700">SELECT</span>  
+    <span style="color:#c5060b;font-style:italic">intr</span>.<span style="color:#c5060b;font-style:italic">nome</span>, 
+    <span style="color:#c5060b;font-style:italic">con</span>.<span style="color:#c5060b;font-style:italic">prazo_inicio</span>, 
+    <span style="color:#c5060b;font-style:italic">con</span>.<span style="color:#c5060b;font-style:italic">prazo_expiracao</span>,  
+    <span style="color:#c5060b;font-style:italic">con</span>.<span style="color:#c5060b;font-style:italic">tipo_contrato</span>  
+ 
+<span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_contrato</span> <span style="color:#0100b6;font-weight:700">AS</span> con 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_interessado</span> <span style="color:#0100b6;font-weight:700">AS</span> intr <span style="color:#0100b6;font-weight:700">ON</span> (<span style="color:#c5060b;font-style:italic">intr</span>.<span style="color:#c5060b;font-style:italic">idInteressado</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">con</span>.<span style="color:#c5060b;font-style:italic">FK_interessado_idInteressado</span>) 
+<span style="color:#0100b6;font-weight:700">WHERE</span>
+    (
+    <span style="color:#c5060b;font-style:italic">con</span>.<span style="color:#c5060b;font-style:italic">staus_contrato</span> <span style="color:#0100b6;font-weight:700">LIKE</span> <span style="color:#d80800">'nao esta em vigor'</span>
+    ) 
+
+
+GO
+
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_relat_forns]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_relat_forns] <span style="color:#0100b6;font-weight:700">AS</span> 
+    <span style="color:#0100b6;font-weight:700">SELECT</span> 
+    <span style="color:#c5060b;font-style:italic">frn</span>.<span style="color:#c5060b;font-style:italic">PK_idFornecedor</span> <span style="color:#0100b6;font-weight:700">AS</span> forn_id, 
+    <span style="color:#c5060b;font-style:italic">frn</span>.<span style="color:#c5060b;font-style:italic">nome</span>, 
+    <span style="color:#c5060b;font-style:italic">frn</span>.<span style="color:#c5060b;font-style:italic">permissao</span> 
+    <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_fornecedor</span> <span style="color:#0100b6;font-weight:700">AS</span> frn 
+GO
+
+
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_espacos_cont_fech_ano]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_espacos_cont_fech_ano] <span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#0100b6;font-weight:700">SELECT</span> 
+    <span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">nome_espaco</span>, 
+    <span style="color:#c5060b;font-style:italic">contr</span>.<span style="color:#c5060b;font-style:italic">tipo_contrato</span>, 
+    <span style="color:#c5060b;font-style:italic">ntrs</span>.<span style="color:#c5060b;font-style:italic">nome</span> <span style="color:#0100b6;font-weight:700">AS</span> nome_locatario, 
+    <span style="color:#c5060b;font-style:italic">tp</span>.<span style="color:#c5060b;font-style:italic">forma_utilizacao</span> 
+ 
+<span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_interessado</span> <span style="color:#0100b6;font-weight:700">AS</span> ntrs 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_contrato</span> <span style="color:#0100b6;font-weight:700">AS</span> contr <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">ntrs</span>.<span style="color:#c5060b;font-style:italic">idInteressado</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">contr</span>.<span style="color:#c5060b;font-style:italic">FK_interessado_idInteressado</span>) 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_espaco</span> <span style="color:#0100b6;font-weight:700">AS</span> esp <span style="color:#0100b6;font-weight:700">ON</span> (<span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">PK_idEspaco</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">contr</span>.<span style="color:#c5060b;font-style:italic">FK_espaco_PK_idEspaco</span>) 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_tipo</span> <span style="color:#0100b6;font-weight:700">AS</span> tp <span style="color:#0100b6;font-weight:700">ON</span> (<span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">FK_tipo_PK_idTipo</span> <span style="color:#0100b6;font-weight:700">=</span> PK_idTipo) 
+ 
+<span style="color:#0100b6;font-weight:700">WHERE</span>
+    ( 
+    YEAR(<span style="color:#c5060b;font-style:italic">contr</span>.<span style="color:#c5060b;font-style:italic">prazo_inicio</span>) <span style="color:#0100b6;font-weight:700">=</span> YEAR(GETDATE()) 
+    ) 
+
+
+GO
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_event_inscritos]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_event_inscritos] 
+<span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#00b418">/*SELECT
+    DISTINCT schem_standard.tbl_evento.PK_idEvento AS id_evento, 
+    schem_standard.tbl_evento.nome AS nome_evento,  
+    schem_standard.tbl_evento.data_dia AS dia_evento, 
+    schem_standard.tbl_evento.tipo AS tipo_evento, 
+COUNT(schem_standard.tbl_inscricao.PK_enderecoEmail) OVER(PARTITION BY schem_standard.tbl_evento.PK_idEvento) AS inscritos 
+FROM schem_standard.tbl_evento 
+    INNER JOIN schem_standard.tbl_inscricao  ON schem_standard.tbl_evento.PK_idEvento = schem_standard.tbl_inscricao.FK_evento_PK_idEvento */</span>
+
+<span style="color:#0100b6;font-weight:700">SELECT</span> 
+  <span style="color:#c5060b;font-style:italic">ev</span>.<span style="color:#c5060b;font-style:italic">PK_idEvento</span> <span style="color:#0100b6;font-weight:700">AS</span> id_evento,
+  <span style="color:#c5060b;font-style:italic">ev</span>.<span style="color:#c5060b;font-style:italic">nome</span> <span style="color:#0100b6;font-weight:700">AS</span> nome_evento,
+  <span style="color:#c5060b;font-style:italic">ev</span>.<span style="color:#c5060b;font-style:italic">data_dia</span> <span style="color:#0100b6;font-weight:700">AS</span> data_evento,
+  <span style="color:#c5060b;font-style:italic">ev</span>.<span style="color:#c5060b;font-style:italic">tipo</span> <span style="color:#0100b6;font-weight:700">AS</span> tipo_evento,
+  <span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">cli</span>.<span style="color:#c5060b;font-style:italic">PK_idCliente</span>) OVER(PARTITION BY <span style="color:#c5060b;font-style:italic">ev</span>.<span style="color:#c5060b;font-style:italic">PK_idEvento</span>) <span style="color:#0100b6;font-weight:700">AS</span> total_nscritos
+  
+  <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_evento</span> <span style="color:#0100b6;font-weight:700">AS</span> ev 
+  <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_inscricao</span> <span style="color:#0100b6;font-weight:700">AS</span> insc
+  <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">ev</span>.<span style="color:#c5060b;font-style:italic">PK_idEvento</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">insc</span>.<span style="color:#c5060b;font-style:italic">FK_evento_PK_idEvento</span>
+  <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_cliente</span> <span style="color:#0100b6;font-weight:700">AS</span> cli
+  <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">insc</span>.<span style="color:#c5060b;font-style:italic">FK_cliente_PK_idCliente</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">cli</span>.<span style="color:#c5060b;font-style:italic">PK_idCliente</span>
+
+GO
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_fluxo_exd_cap_6meses]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+
+CREATE VIEW [schem_views].[view_fluxo_exd_cap_6meses] <span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#0100b6;font-weight:700">SELECT</span> 
+    DISTINCT <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>) <span style="color:#0100b6;font-weight:700">AS</span> data, 
+    <span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">qtdeVagasCliente</span> <span style="color:#0100b6;font-weight:700">AS</span> vagas_cliente_total, 
+    <span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">PK_idTiquete</span>) OVER(PARTITION BY <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>)) <span style="color:#0100b6;font-weight:700">AS</span> tiquetes_vendidos, 
+    (<span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">qtdeVagasCliente</span> <span style="color:#0100b6;font-weight:700">-</span> <span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">PK_idTiquete</span>) OVER(PARTITION BY <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>))) <span style="color:#0100b6;font-weight:700">AS</span> max_vagas_livres, 
+    <span style="color:#3c4c72;font-weight:700">SUM</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">valor</span>) OVER(PARTITION BY <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>)) <span style="color:#0100b6;font-weight:700">AS</span> total_arrecadado, 
+    (CAST(<span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">PK_idTiquete</span>) OVER(PARTITION BY <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>) <span style="color:#0100b6;font-weight:700">AS</span> float) <span style="color:#0100b6;font-weight:700">/</span> CAST(<span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">qtdeVagasCliente</span> <span style="color:#0100b6;font-weight:700">AS</span> float)) <span style="color:#0100b6;font-weight:700">AS</span> fluxo_diario 
+
+<span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_estacionamento</span> <span style="color:#0100b6;font-weight:700">AS</span> est 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span> <span style="color:#0100b6;font-weight:700">AS</span> cvag <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">cvag</span>.<span style="color:#c5060b;font-style:italic">FK_estacionamento_PK_idEstacionamento</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">PK_idEstacionamento</span>) 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_tiquete</span> <span style="color:#0100b6;font-weight:700">AS</span> tiq <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">FK_vaga_cliente_PK_idVagaCliente</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">cvag</span>.<span style="color:#c5060b;font-style:italic">PK_idVagaCliente</span>) 
+<span style="color:#0100b6;font-weight:700">WHERE</span>
+    ( 
+    fluxo_diario <span style="color:#0100b6;font-weight:700">></span> <span style="color:#cd0000;font-style:italic">1</span>.<span style="color:#cd0000;font-style:italic">0</span> 
+    <span style="color:#0100b6;font-weight:700">AND</span> 
+    <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>) <span style="color:#0100b6;font-weight:700">></span> DATEADD(m, <span style="color:#0100b6;font-weight:700">-</span><span style="color:#cd0000;font-style:italic">6</span>, GETDATE() <span style="color:#0100b6;font-weight:700">-</span> DATEPART(d, GETDATE()) <span style="color:#0100b6;font-weight:700">+</span> <span style="color:#cd0000;font-style:italic">1</span>) 
+    ) 
+GO
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_forn_perm_neg]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_forn_perm_neg] <span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#0100b6;font-weight:700">SELECT</span>  
+    <span style="color:#c5060b;font-style:italic">lj</span>.<span style="color:#c5060b;font-style:italic">nome</span> <span style="color:#0100b6;font-weight:700">AS</span> nome_loja, 
+    <span style="color:#c5060b;font-style:italic">lj</span>.<span style="color:#c5060b;font-style:italic">ramo_atuacao</span> <span style="color:#0100b6;font-weight:700">AS</span> ramo_loja, 
+    <span style="color:#c5060b;font-style:italic">forn</span>.<span style="color:#c5060b;font-style:italic">nome</span> <span style="color:#0100b6;font-weight:700">AS</span> nome_fornecedor, 
+    <span style="color:#c5060b;font-style:italic">frnto</span>.<span style="color:#c5060b;font-style:italic">tipo_material</span> <span style="color:#0100b6;font-weight:700">AS</span> material_fornecedor, 
+    <span style="color:#c5060b;font-style:italic">forn</span>.<span style="color:#c5060b;font-style:italic">permissao</span> <span style="color:#0100b6;font-weight:700">AS</span> permissao_fornecedor 
+ 
+<span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_loja</span> <span style="color:#0100b6;font-weight:700">AS</span> lj 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_fornece_para</span> <span style="color:#0100b6;font-weight:700">AS</span> frnto <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">frnto</span>.<span style="color:#c5060b;font-style:italic">FK_loja_PK_idLoja</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">lj</span>.<span style="color:#c5060b;font-style:italic">PK_idLoja</span>) 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_fornecedor</span> <span style="color:#0100b6;font-weight:700">AS</span> forn <span style="color:#0100b6;font-weight:700">ON</span> (<span style="color:#c5060b;font-style:italic">frnto</span>.<span style="color:#c5060b;font-style:italic">FK_fornecedor_PK_idFornecedor</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">forn</span>.<span style="color:#c5060b;font-style:italic">PK_idFornecedor</span>) 
+    <span style="color:#0100b6;font-weight:700">WHERE</span>
+        (
+        <span style="color:#c5060b;font-style:italic">forn</span>.<span style="color:#c5060b;font-style:italic">permissao</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#d80800">'NEGADA'</span>
+        ) 
+
+
+GO
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_relat_aloc_espacos_livres]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_relat_aloc_espacos_livres] <span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#0100b6;font-weight:700">SELECT</span> 
+    <span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">PK_idEspaco</span>, 
+    <span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">nome_espaco</span> 
+<span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_espaco</span> <span style="color:#0100b6;font-weight:700">AS</span> esp 
+<span style="color:#0100b6;font-weight:700">WHERE</span> <span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">FK_loja_PK_idLoja</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">NULL</span>; 
+
+
+
+
+GO
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_relat_aloc_espacos_ocupados]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_relat_aloc_espacos_ocupados] <span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#0100b6;font-weight:700">SELECT</span> 
+    <span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">PK_idEspaco</span>, 
+    <span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">nome_espaco</span> 
+<span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_espaco</span> <span style="color:#0100b6;font-weight:700">AS</span> esp 
+<span style="color:#0100b6;font-weight:700">WHERE</span> <span style="color:#c5060b;font-style:italic">esp</span>.<span style="color:#c5060b;font-style:italic">FK_loja_PK_idLoja</span> <span style="color:#0100b6;font-weight:700">IS NOT NULL</span>; 
+
+
+
+GO
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_relat_estac]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_relat_estac] <span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#0100b6;font-weight:700">SELECT</span> 
+    DISTINCT <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>) <span style="color:#0100b6;font-weight:700">AS</span> data, 
+    <span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">qtdeVagasCliente</span> <span style="color:#0100b6;font-weight:700">AS</span> vagas_cliente_total, 
+    <span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">PK_idTiquete</span>) OVER(PARTITION BY <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>)) <span style="color:#0100b6;font-weight:700">AS</span> tiquetes_vendidos, 
+    (<span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">qtdeVagasCliente</span> <span style="color:#0100b6;font-weight:700">-</span> <span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">PK_idTiquete</span>) OVER(PARTITION BY <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>))) <span style="color:#0100b6;font-weight:700">AS</span> max_vagas_livres, 
+    <span style="color:#3c4c72;font-weight:700">SUM</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">valor</span>) OVER(PARTITION BY <span style="color:#3c4c72;font-weight:700">CONVERT</span>(DATE, <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>, <span style="color:#cd0000;font-style:italic">101</span>)) <span style="color:#0100b6;font-weight:700">AS</span> total_arrecadado, 
+    CAST(<span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">PK_idTiquete</span>) OVER(PARTITION BY <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">hora_saida</span>) <span style="color:#0100b6;font-weight:700">AS</span> float) <span style="color:#0100b6;font-weight:700">/</span> CAST(<span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">qtdeVagasCliente</span> <span style="color:#0100b6;font-weight:700">AS</span> float) <span style="color:#0100b6;font-weight:700">AS</span> fluxo_diario 
+
+<span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_estacionamento</span> <span style="color:#0100b6;font-weight:700">AS</span> est 
+<span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span> <span style="color:#0100b6;font-weight:700">AS</span> cvag <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">cvag</span>.<span style="color:#c5060b;font-style:italic">FK_estacionamento_PK_idEstacionamento</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">PK_idEstacionamento</span>) 
+<span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_tiquete</span> <span style="color:#0100b6;font-weight:700">AS</span> tiq <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">FK_vaga_cliente_PK_idVagaCliente</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">cvag</span>.<span style="color:#c5060b;font-style:italic">PK_idVagaCliente</span>) 
+ 
+
+
+
+GO
+<span style="color:#00b418">/****** Object:  View [schem_views].[view_relat_lojistas]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE VIEW [schem_views].[view_relat_lojistas] <span style="color:#0100b6;font-weight:700">AS</span> 
+<span style="color:#0100b6;font-weight:700">SELECT</span> 
+    <span style="color:#c5060b;font-style:italic">ntrss</span>.<span style="color:#c5060b;font-style:italic">nome</span> <span style="color:#0100b6;font-weight:700">AS</span> nome_lojista, 
+    <span style="color:#c5060b;font-style:italic">ljst</span>.<span style="color:#c5060b;font-style:italic">cnpj</span> <span style="color:#0100b6;font-weight:700">AS</span> cnpj_lojista, 
+    <span style="color:#c5060b;font-style:italic">ljst</span>.<span style="color:#c5060b;font-style:italic">situacao</span> <span style="color:#0100b6;font-weight:700">AS</span> situacao_lojista, 
+    <span style="color:#c5060b;font-style:italic">lj</span>.<span style="color:#c5060b;font-style:italic">nome</span> <span style="color:#0100b6;font-weight:700">AS</span> nome_loja, 
+    <span style="color:#c5060b;font-style:italic">lj</span>.<span style="color:#c5060b;font-style:italic">ramo_atuacao</span> <span style="color:#0100b6;font-weight:700">AS</span> ramo_loja, 
+    <span style="color:#c5060b;font-style:italic">cntr</span>.<span style="color:#c5060b;font-style:italic">prazo_inicio</span> <span style="color:#0100b6;font-weight:700">AS</span> inicio_contrato, 
+    <span style="color:#c5060b;font-style:italic">cntr</span>.<span style="color:#c5060b;font-style:italic">prazo_expiracao</span> <span style="color:#0100b6;font-weight:700">AS</span> expiracao_contrato, 
+    <span style="color:#c5060b;font-style:italic">cntr</span>.<span style="color:#c5060b;font-style:italic">staus_contrato</span>, 
+    <span style="color:#c5060b;font-style:italic">cntr</span>.<span style="color:#c5060b;font-style:italic">tipo_contrato</span>, 
+    <span style="color:#c5060b;font-style:italic">cntr</span>.<span style="color:#c5060b;font-style:italic">valor</span> <span style="color:#0100b6;font-weight:700">AS</span> valor_contrato, 
+    datediff(day, <span style="color:#c5060b;font-style:italic">cntr</span>.<span style="color:#c5060b;font-style:italic">prazo_expiracao</span>, <span style="color:#c5060b;font-style:italic">cntr</span>.<span style="color:#c5060b;font-style:italic">prazo_inicio</span>) <span style="color:#0100b6;font-weight:700">AS</span> tempo_vigencia 
+ 
+<span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_loja</span> <span style="color:#0100b6;font-weight:700">AS</span> lj  
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_lojista</span> <span style="color:#0100b6;font-weight:700">AS</span> ljst <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">lj</span>.<span style="color:#c5060b;font-style:italic">FK_lojista_PK_idLojista</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">ljst</span>.<span style="color:#c5060b;font-style:italic">PK_idLojista</span>) 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_interessado</span> <span style="color:#0100b6;font-weight:700">AS</span> ntrss <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">ntrss</span>.<span style="color:#c5060b;font-style:italic">idInteressado</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">ljst</span>.<span style="color:#c5060b;font-style:italic">FK_interessado_idInteressado</span>) 
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_contrato</span> <span style="color:#0100b6;font-weight:700">AS</span> cntr <span style="color:#0100b6;font-weight:700">ON</span>(<span style="color:#c5060b;font-style:italic">cntr</span>.<span style="color:#c5060b;font-style:italic">FK_interessado_idInteressado</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">ntrss</span>.<span style="color:#c5060b;font-style:italic">idInteressado</span>) 
+
+
+
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+## INDEXES
+=============================================================================================================*/</span>
+GO
+<span style="color:#00b418">/****** Object:  Index [IX_tbl_vaga_lojista]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE NONCLUSTERED INDEX [IX_tbl_vaga_lojista] <span style="color:#0100b6;font-weight:700">ON</span> [schem_estacionamento].[tbl_vaga_lojista]
+(
+    [PK_idVagaLojista] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, SORT_IN_TEMPDB <span style="color:#0100b6;font-weight:700">=</span> OFF, DROP_EXISTING <span style="color:#0100b6;font-weight:700">=</span> OFF, ONLINE <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+
+GO
+<span style="color:#00b418">/****** Object:  Index [indx_ramo_atuacao_loja]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE NONCLUSTERED INDEX [indx_ramo_atuacao_loja] <span style="color:#0100b6;font-weight:700">ON</span> [schem_locacao].[tbl_loja]
+(
+    [ramo_atuacao] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, SORT_IN_TEMPDB <span style="color:#0100b6;font-weight:700">=</span> OFF, DROP_EXISTING <span style="color:#0100b6;font-weight:700">=</span> OFF, ONLINE <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+
+GO
+<span style="color:#00b418">/****** Object:  Index [indx_cpf_lojista]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE NONCLUSTERED INDEX [indx_cpf_lojista] <span style="color:#0100b6;font-weight:700">ON</span> [schem_locacao].[tbl_lojista]
+(
+    [cnpj] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, SORT_IN_TEMPDB <span style="color:#0100b6;font-weight:700">=</span> OFF, DROP_EXISTING <span style="color:#0100b6;font-weight:700">=</span> OFF, ONLINE <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+
+GO
+<span style="color:#00b418">/****** Object:  Index [indx_email_cliente]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE NONCLUSTERED INDEX [indx_email_cliente] <span style="color:#0100b6;font-weight:700">ON</span> [schem_standard].[tbl_cliente]
+(
+    [email] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, SORT_IN_TEMPDB <span style="color:#0100b6;font-weight:700">=</span> OFF, DROP_EXISTING <span style="color:#0100b6;font-weight:700">=</span> OFF, ONLINE <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+
+GO
+<span style="color:#00b418">/****** Object:  Index [indx_ramo_atuacao_emp_manutencao]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE NONCLUSTERED INDEX [indx_ramo_atuacao_emp_manutencao] <span style="color:#0100b6;font-weight:700">ON</span> [schem_standard].[tbl_empresa_manutencao]
+(
+    [ramo_atuacao] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, SORT_IN_TEMPDB <span style="color:#0100b6;font-weight:700">=</span> OFF, DROP_EXISTING <span style="color:#0100b6;font-weight:700">=</span> OFF, ONLINE <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+GO
+<span style="color:#00b418">/****** Object:  Index [indx_tipo_evento]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE NONCLUSTERED INDEX [indx_tipo_evento] <span style="color:#0100b6;font-weight:700">ON</span> [schem_standard].[tbl_evento]
+(
+    [data_dia] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, SORT_IN_TEMPDB <span style="color:#0100b6;font-weight:700">=</span> OFF, DROP_EXISTING <span style="color:#0100b6;font-weight:700">=</span> OFF, ONLINE <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+
+GO
+<span style="color:#00b418">/****** Object:  Index [indx_tipo_produto]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE NONCLUSTERED INDEX [indx_tipo_produto] <span style="color:#0100b6;font-weight:700">ON</span> [schem_standard].[tbl_fraldario]
+(
+    [tipo_produto] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, SORT_IN_TEMPDB <span style="color:#0100b6;font-weight:700">=</span> OFF, DROP_EXISTING <span style="color:#0100b6;font-weight:700">=</span> OFF, ONLINE <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_PADDING <span style="color:#0100b6;font-weight:700">ON</span>
+
+GO
+<span style="color:#00b418">/****** Object:  Index [indx_tipo_objeto]    Script Date: 22/11/2017 11:57:10 ******/</span>
+CREATE NONCLUSTERED INDEX [indx_tipo_objeto] <span style="color:#0100b6;font-weight:700">ON</span> [schem_standard].[tbl_objeto]
+(
+    [descricao] <span style="color:#0100b6;font-weight:700">ASC</span>
+)WITH (PAD_INDEX <span style="color:#0100b6;font-weight:700">=</span> OFF, STATISTICS_NORECOMPUTE <span style="color:#0100b6;font-weight:700">=</span> OFF, SORT_IN_TEMPDB <span style="color:#0100b6;font-weight:700">=</span> OFF, DROP_EXISTING <span style="color:#0100b6;font-weight:700">=</span> OFF, ONLINE <span style="color:#0100b6;font-weight:700">=</span> OFF, ALLOW_ROW_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>, ALLOW_PAGE_LOCKS <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">ON</span>) <span style="color:#0100b6;font-weight:700">ON</span> [PRIMARY]
+GO
+
+
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+## CONSTRAINTS
+=============================================================================================================*/</span>
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+###         DEFAULT VALUES
+=============================================================================================================*/</span>
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_situacao_vaga] ADD  DEFAULT (<span style="color:#d80800">'LIVRE'</span>) FOR [texto_situacao]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_tiquete] ADD  DEFAULT (getdate()) FOR [hora_entrada]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato] ADD  DEFAULT (<span style="color:#d80800">'Nao esta em vigor'</span>) FOR [staus_contrato]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato] ADD  DEFAULT (getdate()) FOR [prazo_inicio]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato] ADD  DEFAULT (<span style="color:#d80800">'Loja'</span>) FOR [tipo_contrato]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_fornecedor] ADD  DEFAULT (<span style="color:#d80800">'validar'</span>) FOR [permissao]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_mensalidade] ADD  DEFAULT (<span style="color:#d80800">'Nao pago'</span>) FOR [status_do_pagamento]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_cliente] ADD  DEFAULT (<span style="color:#d80800">'019'</span>) FOR [telefone_ddd]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_objeto] ADD  DEFAULT (getdate()) FOR [data_dia]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_wifi] ADD  DEFAULT (<span style="color:#d80800">'admin'</span>) FOR [login_do_administrador]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_wifi] ADD  DEFAULT (<span style="color:#d80800">'admin'</span>) FOR [senha_do_administrador]
+GO
+
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+###         FOREIGN KEYS
+=============================================================================================================*/</span>
+
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_tiquete]  WITH CHECK ADD  CONSTRAINT [FK_tiquete_1] FOREIGN KEY([FK_cliente_PK_idCliente])
+REFERENCES [schem_standard].[tbl_cliente] ([PK_idCliente])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_tiquete] CHECK CONSTRAINT [FK_tiquete_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_tiquete]  WITH CHECK ADD  CONSTRAINT [FK_tiquete_2] FOREIGN KEY([FK_vaga_cliente_PK_idVagaCliente])
+REFERENCES [schem_estacionamento].[tbl_vaga_cliente] ([PK_idVagaCliente])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_tiquete] CHECK CONSTRAINT [FK_tiquete_2]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_vaga_cliente]  WITH CHECK ADD  CONSTRAINT [FK_estado_vaga_1] FOREIGN KEY([FK_estacionamento_PK_idEstadoVaga])
+REFERENCES [schem_estacionamento].[tbl_situacao_vaga] ([PK_idEstadoVaga])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_vaga_cliente] CHECK CONSTRAINT [FK_estado_vaga_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_vaga_cliente]  WITH CHECK ADD  CONSTRAINT [FK_vaga_cliente_1] FOREIGN KEY([FK_estacionamento_PK_idEstacionamento])
+REFERENCES [schem_estacionamento].[tbl_estacionamento] ([PK_idEstacionamento])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_vaga_cliente] CHECK CONSTRAINT [FK_vaga_cliente_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_vaga_lojista]  WITH CHECK ADD  CONSTRAINT [FK_estado_vaga_2] FOREIGN KEY([FK_estacionamento_PK_idEstadoVaga])
+REFERENCES [schem_estacionamento].[tbl_situacao_vaga] ([PK_idEstadoVaga])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_vaga_lojista] CHECK CONSTRAINT [FK_estado_vaga_2]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_vaga_lojista]  WITH CHECK ADD  CONSTRAINT [FK_vaga_lojista_1] FOREIGN KEY([FK_estacionamento_PK_idEstacionamento])
+REFERENCES [schem_estacionamento].[tbl_estacionamento] ([PK_idEstacionamento])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_estacionamento].[tbl_vaga_lojista] CHECK CONSTRAINT [FK_vaga_lojista_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato]  WITH CHECK ADD  CONSTRAINT [FK_contrato_1] FOREIGN KEY([FK_espaco_PK_idEspaco])
+REFERENCES [schem_standard].[tbl_espaco] ([PK_idEspaco])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato] CHECK CONSTRAINT [FK_contrato_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato]  WITH CHECK ADD  CONSTRAINT [FK_contrato_2] FOREIGN KEY([FK_administrador_PK_idAdm])
+REFERENCES [schem_standard].[tbl_administrador] ([PK_idAdm])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato] CHECK CONSTRAINT [FK_contrato_2]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato]  WITH CHECK ADD  CONSTRAINT [FK_contrato_3] FOREIGN KEY([FK_interessado_idInteressado])
+REFERENCES [schem_locacao].[tbl_interessado] ([idInteressado])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato] CHECK CONSTRAINT [FK_contrato_3]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_fornece_para]  WITH CHECK ADD  CONSTRAINT [FK_fornece_para_0] FOREIGN KEY([FK_fornecedor_PK_idFornecedor])
+REFERENCES [schem_locacao].[tbl_fornecedor] ([PK_idFornecedor])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_fornece_para] CHECK CONSTRAINT [FK_fornece_para_0]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_fornece_para]  WITH CHECK ADD  CONSTRAINT [FK_fornece_para_1] FOREIGN KEY([FK_loja_PK_idLoja])
+REFERENCES [schem_locacao].[tbl_loja] ([PK_idLoja])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_fornece_para] CHECK CONSTRAINT [FK_fornece_para_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_loja]  WITH CHECK ADD  CONSTRAINT [FK_loja_1] FOREIGN KEY([FK_lojista_PK_idLojista])
+REFERENCES [schem_locacao].[tbl_lojista] ([PK_idLojista])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_loja] CHECK CONSTRAINT [FK_loja_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_lojista]  WITH CHECK ADD  CONSTRAINT [FK_lojista_1] FOREIGN KEY([FK_vaga_lojista_PK_idVagaLojista])
+REFERENCES [schem_estacionamento].[tbl_vaga_lojista] ([PK_idVagaLojista])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_lojista] CHECK CONSTRAINT [FK_lojista_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_lojista]  WITH CHECK ADD  CONSTRAINT [FK_lojista_2] FOREIGN KEY([FK_interessado_idInteressado])
+REFERENCES [schem_locacao].[tbl_interessado] ([idInteressado])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_lojista] CHECK CONSTRAINT [FK_lojista_2]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_mensalidade]  WITH CHECK ADD  CONSTRAINT [FK_mensalidade_1] FOREIGN KEY([FK_contrato_interessado_PK_idContrato])
+REFERENCES [schem_locacao].[tbl_contrato] ([PK_idContrato])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_mensalidade] CHECK CONSTRAINT [FK_mensalidade_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_procura]  WITH CHECK ADD  CONSTRAINT [FK_procura_0] FOREIGN KEY([FK_administrador_PK_idAdm])
+REFERENCES [schem_standard].[tbl_administrador] ([PK_idAdm])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_procura] CHECK CONSTRAINT [FK_procura_0]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_procura]  WITH CHECK ADD  CONSTRAINT [FK_procura_1] FOREIGN KEY([FK_interessado_idInteressado])
+REFERENCES [schem_locacao].[tbl_interessado] ([idInteressado])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_procura] CHECK CONSTRAINT [FK_procura_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_acessa]  WITH CHECK ADD  CONSTRAINT [FK_acessa_0] FOREIGN KEY([FK_conta_PK_login])
+REFERENCES [schem_standard].[tbl_conta] ([PK_login])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_acessa] CHECK CONSTRAINT [FK_acessa_0]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_acessa]  WITH CHECK ADD  CONSTRAINT [FK_acessa_1] FOREIGN KEY([FK_wifi_PK_idWifi])
+REFERENCES [schem_standard].[tbl_wifi] ([PK_idWifi])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_acessa] CHECK CONSTRAINT [FK_acessa_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_achados_e_perdidos]  WITH CHECK ADD  CONSTRAINT [FK_achados_e_perdidos_1] FOREIGN KEY([FK_administrador_PK_idAdm])
+REFERENCES [schem_standard].[tbl_administrador] ([PK_idAdm])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_achados_e_perdidos] CHECK CONSTRAINT [FK_achados_e_perdidos_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_achados_e_perdidos]  WITH CHECK ADD  CONSTRAINT [FK_achados_e_perdidos_2] FOREIGN KEY([FK_espaco_PK_idEspaco])
+REFERENCES [schem_standard].[tbl_espaco] ([PK_idEspaco])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_achados_e_perdidos] CHECK CONSTRAINT [FK_achados_e_perdidos_2]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_conta]  WITH CHECK ADD  CONSTRAINT [FK_conta_1] FOREIGN KEY([FK_cliente_PK_idCliente])
+REFERENCES [schem_standard].[tbl_cliente] ([PK_idCliente])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_conta] CHECK CONSTRAINT [FK_conta_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_servico_empresa_manutencao]  WITH CHECK ADD  CONSTRAINT [FK_adm_contrata_1] FOREIGN KEY([FK_administrador_PK_idAdm])
+REFERENCES [schem_standard].[tbl_administrador] ([PK_idAdm])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_servico_empresa_manutencao] CHECK CONSTRAINT [FK_adm_contrata_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_espaco]  WITH CHECK ADD  CONSTRAINT [FK_espaco_1] FOREIGN KEY([FK_PK_localizacao_PK_localizacao])
+REFERENCES [schem_standard].[tbl_localizacao] ([PK_localizacao])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_espaco] CHECK CONSTRAINT [FK_espaco_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_espaco]  WITH CHECK ADD  CONSTRAINT [FK_espaco_2] FOREIGN KEY([FK_tipo_PK_idTipo])
+REFERENCES [schem_standard].[tbl_tipo] ([PK_idTipo])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_espaco] CHECK CONSTRAINT [FK_espaco_2]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_espaco]  WITH CHECK ADD  CONSTRAINT [FK_espaco_3] FOREIGN KEY([FK_loja_PK_idLoja])
+REFERENCES [schem_locacao].[tbl_loja] ([PK_idLoja])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_espaco] CHECK CONSTRAINT [FK_espaco_3]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_evento]  WITH CHECK ADD  CONSTRAINT [FK_evento_1] FOREIGN KEY([FK_administrador_PK_idAdm])
+REFERENCES [schem_standard].[tbl_administrador] ([PK_idAdm])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_evento] CHECK CONSTRAINT [FK_evento_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_fica_em_3]  WITH CHECK ADD  CONSTRAINT [FK_fica_em_3_0] FOREIGN KEY([FK_espaco_PK_idEspaco])
+REFERENCES [schem_standard].[tbl_espaco] ([PK_idEspaco])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_fica_em_3] CHECK CONSTRAINT [FK_fica_em_3_0]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_fica_em_3]  WITH CHECK ADD  CONSTRAINT [FK_fica_em_3_1] FOREIGN KEY([FK_evento_PK_idEvento])
+REFERENCES [schem_standard].[tbl_evento] ([PK_idEvento])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_fica_em_3] CHECK CONSTRAINT [FK_fica_em_3_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_fraldario]  WITH CHECK ADD  CONSTRAINT [FK_fraldario_1] FOREIGN KEY([FK_administrador_PK_idAdm])
+REFERENCES [schem_standard].[tbl_administrador] ([PK_idAdm])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_fraldario] CHECK CONSTRAINT [FK_fraldario_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_inscricao]  WITH CHECK ADD  CONSTRAINT [FK_inscricao_1] FOREIGN KEY([FK_cliente_PK_idCliente])
+REFERENCES [schem_standard].[tbl_cliente] ([PK_idCliente])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_inscricao] CHECK CONSTRAINT [FK_inscricao_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_inscricao]  WITH CHECK ADD  CONSTRAINT [FK_inscricao_2] FOREIGN KEY([FK_evento_PK_idEvento])
+REFERENCES [schem_standard].[tbl_evento] ([PK_idEvento])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_inscricao] CHECK CONSTRAINT [FK_inscricao_2]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_objeto]  WITH CHECK ADD  CONSTRAINT [FK_objeto_1] FOREIGN KEY([FK_achados_e_perdidos_PK_idAchadosPerdidos])
+REFERENCES [schem_standard].[tbl_achados_e_perdidos] ([PK_idAchadosPerdidos])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_objeto] CHECK CONSTRAINT [FK_objeto_1]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_objeto]  WITH CHECK ADD  CONSTRAINT [FK_objeto_2] FOREIGN KEY([FK_classificacao_PK_idClasse])
+REFERENCES [schem_standard].[tbl_classificacao] ([PK_idClasse])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_objeto] CHECK CONSTRAINT [FK_objeto_2]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_servico_empresa_manutencao]  WITH CHECK ADD  CONSTRAINT [FK_tbl_servico_empresa_manutencao_tbl_empresa_manutencao] FOREIGN KEY([FK_empresa_manutencao_cnpj])
+REFERENCES [schem_standard].[tbl_empresa_manutencao] ([PK_cnpj])
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_servico_empresa_manutencao] CHECK CONSTRAINT [FK_tbl_servico_empresa_manutencao_tbl_empresa_manutencao]
+GO
+
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+###         CHECK CONSTRAINTS
+=============================================================================================================*/</span>
+
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato]  WITH CHECK ADD  CONSTRAINT [cons_chk_sts] CHECK  (([staus_contrato]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'Em vigor'</span> <span style="color:#0100b6;font-weight:700">OR</span> [staus_contrato]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'Nao esta em vigor'</span>))
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato] CHECK CONSTRAINT [cons_chk_sts]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato]  WITH CHECK ADD  CONSTRAINT [cons_chk_tipo_contrato] CHECK  (([tipo_contrato]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'Loja'</span> <span style="color:#0100b6;font-weight:700">OR</span> [tipo_contrato]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'Lazer'</span>))
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_contrato] CHECK CONSTRAINT [cons_chk_tipo_contrato]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_fornecedor]  WITH CHECK ADD  CONSTRAINT [cons_chk_permissao_forn] CHECK  (([permissao]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'validar'</span> <span style="color:#0100b6;font-weight:700">OR</span> [permissao]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'concedida'</span> <span style="color:#0100b6;font-weight:700">OR</span> [permissao]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'negada'</span>))
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_fornecedor] CHECK CONSTRAINT [cons_chk_permissao_forn]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_mensalidade]  WITH CHECK ADD  CONSTRAINT [CHK_status_pgto] CHECK  (([status_do_pagamento]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'Pago'</span> <span style="color:#0100b6;font-weight:700">OR</span> [status_do_pagamento]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'Nao pago'</span>))
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_locacao].[tbl_mensalidade] CHECK CONSTRAINT [CHK_status_pgto]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_fraldario]  WITH CHECK ADD  CONSTRAINT [CHK_sit_prod] CHECK  (([situacao_produtos]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'Ha produtos'</span> <span style="color:#0100b6;font-weight:700">OR</span> [situacao_produtos]<span style="color:#0100b6;font-weight:700">=</span><span style="color:#d80800">'Nao ha'</span>))
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">TABLE</span> [schem_standard].[tbl_fraldario] CHECK CONSTRAINT [CHK_sit_prod]
+GO
+
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+##  STORED PROCEDURES
+=============================================================================================================*/</span>
+<span style="color:#00b418">/****** Object:  StoredProcedure [schem_prog_usp_usf].[usp_atualiza_vagas]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE PROCEDURE [schem_prog_usp_usf].[usp_atualiza_vagas]
+    @IdEstacionamento INT
+<span style="color:#0100b6;font-weight:700">AS</span>
+<span style="color:#0100b6;font-weight:700">BEGIN</span>
+    
+    DECLARE @countVagasCliente INT <span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span>.PK_idVagaCliente) <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span>
+  DECLARE @countVagasLojista INT <span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#3c4c72;font-weight:700">COUNT</span>(<span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_lojista</span>.PK_idVagaLojista) <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_lojista</span>
+  
+  DECLARE @totalVagas INT <span style="color:#0100b6;font-weight:700">=</span> @countVagasCliente <span style="color:#0100b6;font-weight:700">+</span> @countVagasLojista
+
+
+  <span style="color:#0100b6;font-weight:700">UPDATE</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_estacionamento</span> 
+    <span style="color:#0100b6;font-weight:700">SET</span>
+      total_vagas <span style="color:#0100b6;font-weight:700">=</span> @totalVagas,
+      qtdeVagasCliente <span style="color:#0100b6;font-weight:700">=</span> @countVagasLojista,
+      qtdVagasLojista <span style="color:#0100b6;font-weight:700">=</span> @countVagasCliente
+    <span style="color:#0100b6;font-weight:700">WHERE</span> PK_idEstacionamento <span style="color:#0100b6;font-weight:700">=</span> @IdEstacionamento
+
+END
+
+
+
+GO
+<span style="color:#00b418">/****** Object:  StoredProcedure [schem_prog_usp_usf].[usp_cadastra_em_evento]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE PROCEDURE [schem_prog_usp_usf].[usp_cadastra_em_evento] 
+  @idEvento INT,
+  @emailcliente CHAR(<span style="color:#cd0000;font-style:italic">100</span>),
+  @insNomeCli CHAR(<span style="color:#cd0000;font-style:italic">50</span>) <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">NULL</span>
+  
+
+<span style="color:#0100b6;font-weight:700">AS</span>
+  <span style="color:#0100b6;font-weight:700">BEGIN</span>
+    DECLARE @nomeCli CHAR(<span style="color:#cd0000;font-style:italic">50</span>)
+    DECLARE @idCli INT
+    DECLARE @results INT
+    
+     <span style="color:#0100b6;font-weight:700">SELECT</span> @results <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#3c4c72;font-weight:700">COUNT</span>(PK_idCliente) <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_cliente</span> <span style="color:#0100b6;font-weight:700">WHERE</span> email <span style="color:#0100b6;font-weight:700">LIKE</span> @emailcliente
+
+    IF(@results <span style="color:#0100b6;font-weight:700">></span> <span style="color:#cd0000;font-style:italic">0</span>) <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      RAISERROR(<span style="color:#d80800">'O email digitado está duplicado.'</span>, <span style="color:#cd0000;font-style:italic">14</span>, <span style="color:#cd0000;font-style:italic">1</span>)
+    END
+    
+    <span style="color:#0100b6;font-weight:700">SELECT</span> @nomeCli <span style="color:#0100b6;font-weight:700">=</span> nome, @idCli <span style="color:#0100b6;font-weight:700">=</span> PK_idCliente <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_cliente</span> <span style="color:#0100b6;font-weight:700">WHERE</span> email <span style="color:#0100b6;font-weight:700">LIKE</span> @emailcliente
+
+    IF(@results <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">0</span>) <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">INSERT INTO</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_cliente</span> (telefone_numero, telefone_ddd, nome, email) <span style="color:#0100b6;font-weight:700">VALUES</span> (<span style="color:#0100b6;font-weight:700">NULL</span>,<span style="color:#0100b6;font-weight:700">NULL</span>, @insNomeCli, @emailcliente);
+      <span style="color:#0100b6;font-weight:700">SET</span> @idCli <span style="color:#0100b6;font-weight:700">=</span> @@IDENTITY
+    END 
+  <span style="color:#0100b6;font-weight:700">INSERT INTO</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_inscricao</span> (FK_cliente_PK_idCliente, FK_evento_PK_idEvento) <span style="color:#0100b6;font-weight:700">VALUES</span> (@idCli, @idEvento);
+  END
+
+
+GO
+<span style="color:#00b418">/****** Object:  StoredProcedure [schem_prog_usp_usf].[usp_cobra_tiquete]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE PROCEDURE [schem_prog_usp_usf].[usp_cobra_tiquete]
+  @IdTiquete INT
+  
+
+<span style="color:#0100b6;font-weight:700">AS</span>
+  <span style="color:#0100b6;font-weight:700">BEGIN</span>
+  <span style="color:#0100b6;font-weight:700">BEGIN</span> TRY
+    <span style="color:#0100b6;font-weight:700">BEGIN</span> TRANSACTION
+
+      DECLARE @idEstacionamento INT
+      DECLARE @idVaga INT
+
+       <span style="color:#0100b6;font-weight:700">SELECT</span> @idEstacionamento <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">PK_idEstacionamento</span>, @idVaga <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">vag</span>.<span style="color:#c5060b;font-style:italic">PK_idVagaCliente</span> 
+        <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_tiquete</span> <span style="color:#0100b6;font-weight:700">AS</span> tiq 
+        <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span> <span style="color:#0100b6;font-weight:700">AS</span> vag 
+          <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">FK_vaga_cliente_PK_idVagaCliente</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">vag</span>.<span style="color:#c5060b;font-style:italic">PK_idVagaCliente</span>
+        <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_estacionamento</span> <span style="color:#0100b6;font-weight:700">AS</span> est
+          <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">PK_idEstacionamento</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">vag</span>.<span style="color:#c5060b;font-style:italic">FK_estacionamento_PK_idEstacionamento</span>
+
+      DECLARE @dataSaida DATETIME <span style="color:#0100b6;font-weight:700">=</span> GETDATE()
+      DECLARE @dataEntrada DATETIME
+
+      DECLARE @precoHora INT <span style="color:#0100b6;font-weight:700">SELECT</span> preco_por_hora_para_cliente <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_estacionamento</span> <span style="color:#0100b6;font-weight:700">WHERE</span> PK_idEstacionamento <span style="color:#0100b6;font-weight:700">=</span> @IdEstacionamento
+      DECLARE @valor MONEY <span style="color:#0100b6;font-weight:700">=</span> CAST(DATEDIFF(hour, @dataEntrada, @dataSaida) <span style="color:#0100b6;font-weight:700">*</span> @precoHora <span style="color:#0100b6;font-weight:700">AS</span> MONEY)
+
+      <span style="color:#0100b6;font-weight:700">UPDATE</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_tiquete</span> <span style="color:#0100b6;font-weight:700">SET</span> valor <span style="color:#0100b6;font-weight:700">=</span> @valor, hora_saida <span style="color:#0100b6;font-weight:700">=</span> @dataSaida <span style="color:#0100b6;font-weight:700">WHERE</span> PK_idTiquete <span style="color:#0100b6;font-weight:700">=</span> @IdTiquete
+      
+      DECLARE @idEstadoVaga INT <span style="color:#0100b6;font-weight:700">SELECT</span> TOP <span style="color:#cd0000;font-style:italic">1</span>  PK_idEstadoVaga <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">bd_shopping</span>.<span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.tbl_situacao_vaga <span style="color:#0100b6;font-weight:700">WHERE</span> texto_situacao <span style="color:#0100b6;font-weight:700">LIKE</span> <span style="color:#d80800">'LIBERANDO'</span>
+      <span style="color:#0100b6;font-weight:700">UPDATE</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span> <span style="color:#0100b6;font-weight:700">SET</span> FK_estacionamento_PK_idEstadoVaga <span style="color:#0100b6;font-weight:700">=</span> @idEstadoVaga
+
+    <span style="color:#0100b6;font-weight:700">COMMIT</span> TRANSACTION
+  END TRY  
+  <span style="color:#0100b6;font-weight:700">BEGIN</span> CATCH  
+    <span style="color:#0100b6;font-weight:700">ROLLBACK</span> TRAN
+        <span style="color:#0100b6;font-weight:700">SELECT</span> ERROR_MESSAGE() <span style="color:#0100b6;font-weight:700">AS</span> Retorno
+  END CATCH 
+
+
+  END
+
+
+GO
+<span style="color:#00b418">/****** Object:  StoredProcedure [schem_prog_usp_usf].[usp_entrega_tiquete]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE PROCEDURE [schem_prog_usp_usf].[usp_entrega_tiquete]
+  @IdTiquete INT
+  
+
+<span style="color:#0100b6;font-weight:700">AS</span>
+  <span style="color:#0100b6;font-weight:700">BEGIN</span>
+  <span style="color:#0100b6;font-weight:700">BEGIN</span> TRY
+    <span style="color:#0100b6;font-weight:700">BEGIN</span> TRANSACTION
+
+      DECLARE @idEstacionamento INT
+      DECLARE @idVaga INT
+      DECLARE @horaPagamento DATETIME
+
+
+       <span style="color:#0100b6;font-weight:700">SELECT</span> @horaPagamento <span style="color:#0100b6;font-weight:700">=</span> hora_saida <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_tiquete</span> <span style="color:#0100b6;font-weight:700">WHERE</span> PK_idTiquete <span style="color:#0100b6;font-weight:700">=</span> @IdTiquete
+       DECLARE @horasPassadas INT <span style="color:#0100b6;font-weight:700">=</span> DATEDIFF(hour, @horaPagamento, GETDATE())
+
+       IF(@horasPassadas <span style="color:#0100b6;font-weight:700">>=</span> <span style="color:#cd0000;font-style:italic">1</span>)<span style="color:#0100b6;font-weight:700">BEGIN</span>
+        RAISERROR(<span style="color:#d80800">'O tempo máximo de permanência após o pagamento foi excedido.'</span>, <span style="color:#cd0000;font-style:italic">14</span>, <span style="color:#cd0000;font-style:italic">1</span>)
+       END
+
+       <span style="color:#0100b6;font-weight:700">SELECT</span> @idVaga <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">vag</span>.<span style="color:#c5060b;font-style:italic">PK_idVagaCliente</span> 
+        <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_tiquete</span> <span style="color:#0100b6;font-weight:700">AS</span> tiq 
+        <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span> <span style="color:#0100b6;font-weight:700">AS</span> vag 
+          <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">tiq</span>.<span style="color:#c5060b;font-style:italic">FK_vaga_cliente_PK_idVagaCliente</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">vag</span>.<span style="color:#c5060b;font-style:italic">PK_idVagaCliente</span>
+        <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_estacionamento</span> <span style="color:#0100b6;font-weight:700">AS</span> est
+          <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">est</span>.<span style="color:#c5060b;font-style:italic">PK_idEstacionamento</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">vag</span>.<span style="color:#c5060b;font-style:italic">FK_estacionamento_PK_idEstacionamento</span>
+      
+      DECLARE @idEstadoVaga INT <span style="color:#0100b6;font-weight:700">SELECT</span> TOP <span style="color:#cd0000;font-style:italic">1</span>  PK_idEstadoVaga <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">bd_shopping</span>.<span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.tbl_situacao_vaga <span style="color:#0100b6;font-weight:700">WHERE</span> texto_situacao <span style="color:#0100b6;font-weight:700">LIKE</span> <span style="color:#d80800">'DISPONÍVEL'</span>
+      <span style="color:#0100b6;font-weight:700">UPDATE</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span> <span style="color:#0100b6;font-weight:700">SET</span> FK_estacionamento_PK_idEstadoVaga <span style="color:#0100b6;font-weight:700">=</span> @idEstadoVaga <span style="color:#0100b6;font-weight:700">WHERE</span> PK_idVagaCliente <span style="color:#0100b6;font-weight:700">=</span> @idVaga
+
+    <span style="color:#0100b6;font-weight:700">COMMIT</span> TRANSACTION
+  END TRY  
+  <span style="color:#0100b6;font-weight:700">BEGIN</span> CATCH  
+    <span style="color:#0100b6;font-weight:700">ROLLBACK</span> TRAN
+        <span style="color:#0100b6;font-weight:700">SELECT</span> ERROR_MESSAGE() <span style="color:#0100b6;font-weight:700">AS</span> Retorno
+  END CATCH 
+
+
+  END
+
+
+GO
+<span style="color:#00b418">/****** Object:  StoredProcedure [schem_prog_usp_usf].[usp_gera_lista_evento]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE PROCEDURE [schem_prog_usp_usf].[usp_gera_lista_evento](@idEvento INT)
+  <span style="color:#0100b6;font-weight:700">AS</span>
+  <span style="color:#0100b6;font-weight:700">BEGIN</span>
+     <span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#c5060b;font-style:italic">cli</span>.<span style="color:#c5060b;font-style:italic">nome</span>, <span style="color:#c5060b;font-style:italic">cli</span>.<span style="color:#c5060b;font-style:italic">email</span> <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_evento</span> <span style="color:#0100b6;font-weight:700">AS</span> ev
+        <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_inscricao</span> <span style="color:#0100b6;font-weight:700">AS</span> inscr
+        <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">inscr</span>.<span style="color:#c5060b;font-style:italic">FK_evento_PK_idEvento</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">ev</span>.<span style="color:#c5060b;font-style:italic">PK_idEvento</span>
+        <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_cliente</span> <span style="color:#0100b6;font-weight:700">AS</span> cli
+        <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">cli</span>.<span style="color:#c5060b;font-style:italic">PK_idCliente</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">inscr</span>.<span style="color:#c5060b;font-style:italic">FK_cliente_PK_idCliente</span>
+        <span style="color:#0100b6;font-weight:700">WHERE</span> <span style="color:#c5060b;font-style:italic">ev</span>.<span style="color:#c5060b;font-style:italic">PK_idEvento</span> <span style="color:#0100b6;font-weight:700">=</span> @idEvento
+  END
+
+GO
+<span style="color:#00b418">/****** Object:  StoredProcedure [schem_prog_usp_usf].[usp_gera_tiquete]    Script Date: 22/11/2017 11:57:10 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE PROCEDURE [schem_prog_usp_usf].[usp_gera_tiquete]
+@IdCliente INT <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">NULL</span>
+
+<span style="color:#0100b6;font-weight:700">AS</span>
+<span style="color:#0100b6;font-weight:700">BEGIN</span>
+  
+  <span style="color:#00b418">/*DECLARE @idVaga AS INT SELECT TOP 1 PK_idVagaCliente 
+    FROM bd_shopping.schem_estacionamento.tbl_vaga_cliente AS vaga
+    INNER JOIN bd_shopping.schem_estacionamento.tbl_esta_em_2 AS esta_em
+      ON vaga.PK_idVagaCliente = esta_em.FK_vaga_cliente_PK_idVagaCliente
+      INNER JOIN schem_estacionamento.tbl_situacao_vaga AS situac_vaga
+        ON situac_vaga.PK_idEstadoVaga = esta_em.FK_Situacao_vaga_PK_idEstadoVaga
+    WHERE situac_vaga.texto_situacao LIKE 'DISPONÍVEL'*/</span>
+
+
+  DECLARE @idVaga INT <span style="color:#0100b6;font-weight:700">SELECT</span> TOP <span style="color:#cd0000;font-style:italic">1</span> PK_idVagaCliente 
+    <span style="color:#0100b6;font-weight:700">FROM</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_vaga_cliente</span> <span style="color:#0100b6;font-weight:700">AS</span> vaga
+    <span style="color:#0100b6;font-weight:700">INNER JOIN</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_situacao_vaga</span> <span style="color:#0100b6;font-weight:700">AS</span> sit
+      <span style="color:#0100b6;font-weight:700">ON</span> <span style="color:#c5060b;font-style:italic">sit</span>.<span style="color:#c5060b;font-style:italic">PK_idEstadoVaga</span> <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#c5060b;font-style:italic">vaga</span>.<span style="color:#c5060b;font-style:italic">FK_estacionamento_PK_idEstadoVaga</span>
+     
+    <span style="color:#0100b6;font-weight:700">WHERE</span> <span style="color:#c5060b;font-style:italic">sit</span>.<span style="color:#c5060b;font-style:italic">texto_situacao</span> <span style="color:#0100b6;font-weight:700">LIKE</span> <span style="color:#d80800">'DISPONÍVEL'</span>
+  
+  IF(@idVaga <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#0100b6;font-weight:700">NULL</span>) <span style="color:#0100b6;font-weight:700">BEGIN</span>
+    RAISERROR(<span style="color:#d80800">'Não há vagas disponíveis'</span>, <span style="color:#cd0000;font-style:italic">14</span>, <span style="color:#cd0000;font-style:italic">1</span>)
+  END
+  
+  <span style="color:#0100b6;font-weight:700">INSERT INTO</span> <span style="color:#c5060b;font-style:italic">schem_estacionamento</span>.<span style="color:#c5060b;font-style:italic">tbl_tiquete</span> 
+    (
+    valor, 
+    hora_saida, 
+    hora_entrada, 
+    FK_cliente_PK_idCliente, 
+    FK_vaga_cliente_PK_idVagaCliente
+    )
+  <span style="color:#0100b6;font-weight:700">VALUES</span> (<span style="color:#0100b6;font-weight:700">NULL</span>, <span style="color:#0100b6;font-weight:700">NULL</span>, GETDATE(), @IdCliente, @idVaga);
+END
+GO
+
+USE [bd_shopping]
+GO
+
+
+
+<span style="color:#00b418">/*=========================================================================================================== 
+*MARK*
+##  TRIGGERS
+=============================================================================================================*/</span>
+<span style="color:#00b418">/****** Object:  Trigger [schem_estacionamento].[trg_upd_qtdVagas_loj]    Script Date: 22/11/2017 12:10:06 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+
+CREATE TRIGGER [schem_estacionamento].[trg_upd_qtdVagas_loj] <span style="color:#0100b6;font-weight:700">ON</span> [schem_estacionamento].[tbl_vaga_lojista]
+AFTER INSERT, <span style="color:#0100b6;font-weight:700">DELETE</span>
+<span style="color:#0100b6;font-weight:700">AS</span>
+<span style="color:#0100b6;font-weight:700">BEGIN</span>
+
+  DECLARE @estacId INT
+
+    
+  IF EXISTS(<span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#0100b6;font-weight:700">*</span> <span style="color:#0100b6;font-weight:700">FROM</span> DELETED) <span style="color:#0100b6;font-weight:700">BEGIN</span>
+    <span style="color:#0100b6;font-weight:700">SELECT</span> @estacId <span style="color:#0100b6;font-weight:700">=</span> FK_estacionamento_PK_idEstacionamento <span style="color:#0100b6;font-weight:700">FROM</span> DELETED
+  END
+
+
+  IF EXISTS(<span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#0100b6;font-weight:700">*</span> <span style="color:#0100b6;font-weight:700">FROM</span> INSERTED) <span style="color:#0100b6;font-weight:700">BEGIN</span>
+    <span style="color:#0100b6;font-weight:700">SELECT</span> @estacId <span style="color:#0100b6;font-weight:700">=</span> FK_estacionamento_PK_idEstacionamento <span style="color:#0100b6;font-weight:700">FROM</span> INSERTED
+  END
+
+    EXEC <span style="color:#c5060b;font-style:italic">schem_prog_usp_usf</span>.<span style="color:#c5060b;font-style:italic">usp_atualiza_vagas</span> @IdEstacionamento <span style="color:#0100b6;font-weight:700">=</span> @estacId
+
+END
+GO
+
+
+<span style="color:#00b418">/****** Object:  Trigger [schem_estacionamento].[trg_upd_qtdVagas_cli]    Script Date: 22/11/2017 12:09:46 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+
+CREATE TRIGGER [schem_estacionamento].[trg_upd_qtdVagas_cli] <span style="color:#0100b6;font-weight:700">ON</span> [schem_estacionamento].[tbl_vaga_cliente]
+AFTER INSERT, <span style="color:#0100b6;font-weight:700">DELETE</span>
+<span style="color:#0100b6;font-weight:700">AS</span>
+<span style="color:#0100b6;font-weight:700">BEGIN</span>
+
+  DECLARE @estacId INT
+
+    
+  IF EXISTS(<span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#0100b6;font-weight:700">*</span> <span style="color:#0100b6;font-weight:700">FROM</span> DELETED) <span style="color:#0100b6;font-weight:700">BEGIN</span>
+    <span style="color:#0100b6;font-weight:700">SELECT</span> @estacId <span style="color:#0100b6;font-weight:700">=</span> FK_estacionamento_PK_idEstacionamento <span style="color:#0100b6;font-weight:700">FROM</span> DELETED
+  END
+
+
+  IF EXISTS(<span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#0100b6;font-weight:700">*</span> <span style="color:#0100b6;font-weight:700">FROM</span> INSERTED) <span style="color:#0100b6;font-weight:700">BEGIN</span>
+    <span style="color:#0100b6;font-weight:700">SELECT</span> @estacId <span style="color:#0100b6;font-weight:700">=</span> FK_estacionamento_PK_idEstacionamento <span style="color:#0100b6;font-weight:700">FROM</span> INSERTED
+  END
+
+    EXEC <span style="color:#c5060b;font-style:italic">schem_prog_usp_usf</span>.<span style="color:#c5060b;font-style:italic">usp_atualiza_vagas</span> @IdEstacionamento <span style="color:#0100b6;font-weight:700">=</span> @estacId
+
+END
+GO
+
+<span style="color:#00b418">/****** Object:  Trigger [schem_standard].[trg_validar_cli]    Script Date: 22/11/2017 12:11:55 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+
+CREATE TRIGGER [schem_standard].[trg_validar_cli] <span style="color:#0100b6;font-weight:700">ON</span> [schem_standard].[tbl_cliente]
+  INSTEAD OF INSERT, <span style="color:#0100b6;font-weight:700">UPDATE</span>
+  <span style="color:#0100b6;font-weight:700">AS</span>
+  <span style="color:#0100b6;font-weight:700">BEGIN</span>
+
+    DECLARE @email CHAR(<span style="color:#cd0000;font-style:italic">100</span>),
+     @telnum CHAR(<span style="color:#cd0000;font-style:italic">20</span>),
+     @ddd CHAR(<span style="color:#cd0000;font-style:italic">4</span>),
+     @nome CHAR(<span style="color:#cd0000;font-style:italic">50</span>)
+    
+    <span style="color:#0100b6;font-weight:700">SELECT</span> @email <span style="color:#0100b6;font-weight:700">=</span> email, @telnum <span style="color:#0100b6;font-weight:700">=</span> telefone_numero, @ddd <span style="color:#0100b6;font-weight:700">=</span> telefone_ddd, @nome <span style="color:#0100b6;font-weight:700">=</span> nome <span style="color:#0100b6;font-weight:700">FROM</span> INSERTED
+
+    IF <span style="color:#c5060b;font-style:italic">schem_prog_usp_usf</span>.<span style="color:#c5060b;font-style:italic">usf_valida_email</span>(@email) <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">1</span> <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">INSERT INTO</span> <span style="color:#c5060b;font-style:italic">schem_standard</span>.<span style="color:#c5060b;font-style:italic">tbl_cliente</span> (telefone_numero, telefone_ddd, nome, email)<span style="color:#0100b6;font-weight:700">VALUES</span> (@telnum, @ddd, @nome, @email);
+      <span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#d80800">'sucesso.'</span> <span style="color:#0100b6;font-weight:700">AS</span> retorno
+    END
+    <span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#d80800">'E-mail inválido.'</span> <span style="color:#0100b6;font-weight:700">AS</span> retorno
+  END
+GO
+
+
+<span style="color:#00b418">/****** Object:  Trigger [schem_locacao].[trg_validar_lojista]    Script Date: 22/11/2017 12:21:19 ******/</span>
+<span style="color:#0100b6;font-weight:700">SET</span> ANSI_NULLS <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+<span style="color:#0100b6;font-weight:700">SET</span> QUOTED_IDENTIFIER <span style="color:#0100b6;font-weight:700">ON</span>
+GO
+CREATE TRIGGER [schem_locacao].[trg_validar_lojista] <span style="color:#0100b6;font-weight:700">ON</span> [schem_locacao].[tbl_lojista]
+  INSTEAD OF INSERT, <span style="color:#0100b6;font-weight:700">UPDATE</span>
+  <span style="color:#0100b6;font-weight:700">AS</span>
+  <span style="color:#0100b6;font-weight:700">BEGIN</span>
+
+    DECLARE @situac CHAR(<span style="color:#cd0000;font-style:italic">20</span>),
+     @cnpj CHAR(<span style="color:#cd0000;font-style:italic">18</span>),
+     @vaga INT,
+     @interessado INT
+    
+    <span style="color:#0100b6;font-weight:700">SELECT</span> 
+    @situac <span style="color:#0100b6;font-weight:700">=</span> situacao, 
+    @cnpj <span style="color:#0100b6;font-weight:700">=</span> cnpj, 
+    @interessado <span style="color:#0100b6;font-weight:700">=</span> FK_interessado_idInteressado, 
+    @vaga <span style="color:#0100b6;font-weight:700">=</span> FK_vaga_lojista_PK_idVagaLojista 
+    <span style="color:#0100b6;font-weight:700">FROM</span> INSERTED
+
+    IF <span style="color:#c5060b;font-style:italic">schem_prog_usp_usf</span>.<span style="color:#c5060b;font-style:italic">usf_valida_cnpj</span>(@cnpj) <span style="color:#0100b6;font-weight:700">=</span> <span style="color:#cd0000;font-style:italic">1</span> <span style="color:#0100b6;font-weight:700">BEGIN</span>
+      <span style="color:#0100b6;font-weight:700">INSERT INTO</span> <span style="color:#c5060b;font-style:italic">schem_locacao</span>.<span style="color:#c5060b;font-style:italic">tbl_lojista</span> (situacao, cnpj, FK_interessado_idInteressado, FK_vaga_lojista_PK_idVagaLojista) 
+      <span style="color:#0100b6;font-weight:700">VALUES</span> (@situac, @cnpj, @interessado, @vaga)
+      <span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#d80800">'sucesso.'</span> <span style="color:#0100b6;font-weight:700">AS</span> retorno
+    END
+    <span style="color:#0100b6;font-weight:700">SELECT</span> <span style="color:#d80800">'CNPJ inválido.'</span> <span style="color:#0100b6;font-weight:700">AS</span> retorno
+  END
+GO
+<span style="color:#00b418">/*=========================================== END =================================================*/</span>
+
+
+
+USE [master]
+GO
+<span style="color:#0100b6;font-weight:700">ALTER</span> <span style="color:#0100b6;font-weight:700">DATABASE</span> [bd_shopping] <span style="color:#0100b6;font-weight:700">SET</span>  READ_WRITE 
+GO
+
+</pre>
